@@ -2,42 +2,21 @@ import React, { useEffect, useState } from 'react';
 
 import Tasks from './components/Tasks/Tasks';
 import NewTask from './components/NewTask/NewTask';
-
+import useHttpHook from './hooks/use-http-hook';
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [tasks, setTasks] = useState([]);
-
-  const fetchTasks = async (taskText) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        'https://react-custom-hooks-ccf33-default-rtdb.firebaseio.com/tasks.json'
-      );
-
-      if (!response.ok) {
-        throw new Error('Request failed!');
-      }
-
-      const data = await response.json();
-
+  const { isLoading, error , sendRequest: fetchRequest } = useHttpHook();
+  useEffect(() => {
+    const transformFunction = (data) => {
       const loadedTasks = [];
-
       for (const taskKey in data) {
         loadedTasks.push({ id: taskKey, text: data[taskKey].text });
       }
-
       setTasks(loadedTasks);
-    } catch (err) {
-      setError(err.message || 'Something went wrong!');
     }
-    setIsLoading(false);
-  };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+    fetchRequest({ url: 'https://react-custom-hooks-ccf33-default-rtdb.firebaseio.com/tasks.json' }, transformFunction);
+  }, [fetchRequest]);
 
   const taskAddHandler = (task) => {
     setTasks((prevTasks) => prevTasks.concat(task)); // this is not required since we are 
@@ -50,7 +29,7 @@ function App() {
         items={tasks}
         loading={isLoading}
         error={error}
-        onFetch={fetchTasks}
+        onFetch={fetchRequest}
       />
     </React.Fragment>
   );

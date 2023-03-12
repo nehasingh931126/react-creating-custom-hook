@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
-const useHttpHook = (requestConfigObject, applyData) => {
+const useHttpHook = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const sendRequest = async () => {
+    const sendRequest = useCallback(async (requestConfigObject, applyData) => {
         setIsLoading(true);
         setError(null);
         try {
             const response = await fetch(
                 requestConfigObject.url,{
-                    method: requestConfigObject.method,
-                    headers: requestConfigObject.headers,
-                    body: JSON.stringify(requestConfigObject.body)
+                    method: requestConfigObject.method ?? 'GET',
+                    headers: requestConfigObject.headers ?? {},
+                    body: requestConfigObject.body ? JSON.stringify(requestConfigObject.body) : null
                 }
             );
             if (!response.ok) {
@@ -23,7 +23,7 @@ const useHttpHook = (requestConfigObject, applyData) => {
             setError(err.message || 'Something went wrong!');
         }
         setIsLoading(false);
-    };
+    }, []);
 
     return {
         isLoading,

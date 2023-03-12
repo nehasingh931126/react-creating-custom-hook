@@ -1,1 +1,4 @@
 Custom Hooks are just the functions that return something.
+We need to be careful while using the useEffect since it can create infinite loop while reevaluating: we can 
+use useCallback for the caching of the request
+
