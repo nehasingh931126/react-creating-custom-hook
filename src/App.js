@@ -40,7 +40,7 @@ function App() {
   }, []);
 
   const taskAddHandler = (task) => {
-    setTasks((prevTasks) => prevTasks.concat(task));
+    setTasks((prevTasks) => prevTasks.concat(task)); // this is not required since we are 
   };
 
   return (
