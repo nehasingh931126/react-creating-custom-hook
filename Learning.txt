@@ -1,0 +1,1 @@
+Custom Hooks are just the functions that return something.
